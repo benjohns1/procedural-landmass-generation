@@ -2,7 +2,7 @@
 
 public class MapGenerator : MonoBehaviour
 {
-    public enum DrawMode { NoiseMap, ColorMap }
+    public enum DrawMode { NoiseMap, ColorMap, Mesh }
     public DrawMode drawMode;
 
     public int mapWidth;
@@ -50,8 +50,11 @@ public class MapGenerator : MonoBehaviour
                 display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
                 break;
             case DrawMode.NoiseMap:
-            default:
                 display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
+                break;
+            case DrawMode.Mesh:
+            default:
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
                 break;
         }
     }
