@@ -159,7 +159,6 @@ public class TerrainChunk
         {
             if (!lodMeshes[colliderLODIndex].hasRequestedMesh)
             {
-                Debug.Log("collider requested for " + coord);
                 lodMeshes[colliderLODIndex].RequestMesh(mapData, meshSettings);
             }
         }
@@ -168,7 +167,6 @@ public class TerrainChunk
         {
             if (lodMeshes[colliderLODIndex].hasMesh)
             {
-                Debug.Log("collider set for " + coord);
                 meshCollider.sharedMesh = lodMeshes[colliderLODIndex].mesh;
                 hasSetCollider = true;
             }
