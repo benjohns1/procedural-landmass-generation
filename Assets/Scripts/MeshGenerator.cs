@@ -55,6 +55,8 @@ public static class MeshGenerator
             }
         }
 
+        meshData.BakeNormals();
+
         return meshData;
     }
 }

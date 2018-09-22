@@ -5,6 +5,7 @@ public class MeshData
     private Vector3[] vertices;
     private int[] triangles;
     private Vector2[] uvs;
+    private Vector3[] bakedNormals;
 
     private Vector3[] borderVertices;
     private int[] borderTriangles;
@@ -28,7 +29,7 @@ public class MeshData
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
-        mesh.normals = CalculateNormals();
+        mesh.normals = bakedNormals;
         return mesh;
     }
 
@@ -120,5 +121,10 @@ public class MeshData
         Vector3 sideAC = pointC - pointA;
         return Vector3.Cross(sideAB, sideAC).normalized;
 
+    }
+
+    public void BakeNormals()
+    {
+        bakedNormals = CalculateNormals();
     }
 }
