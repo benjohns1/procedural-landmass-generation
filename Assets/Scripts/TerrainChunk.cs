@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using ThreadedJobSystem;
 
 public class TerrainChunk
 {
@@ -70,7 +71,7 @@ public class TerrainChunk
 
     public void Load()
     {
-        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), OnHeightMapReceived);
+        JobSystem.Run(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), OnHeightMapReceived);
     }
 
     private void OnHeightMapReceived(object data)

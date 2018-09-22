@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using ThreadedJobSystem;
 
 public class LODMesh
 {
@@ -16,7 +17,7 @@ public class LODMesh
     public void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
     {
         hasRequestedMesh = true;
-        ThreadedDataRequester.RequestData(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, lod), OnMeshDataReceived);
+        JobSystem.Run(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, lod), OnMeshDataReceived);
     }
 
     private void OnMeshDataReceived(object data)
