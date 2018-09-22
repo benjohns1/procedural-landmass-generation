@@ -15,7 +15,7 @@
         {
             Min = value;
         }
-        else if (value > Max)
+        if (value > Max)
         {
             Max = value;
         }
