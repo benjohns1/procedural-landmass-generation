@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ThreadedJobSystem
 {
-    public partial class JobSystem
+    public partial class JobQueue
     {
         private class Dispatcher
         {
@@ -34,18 +34,20 @@ namespace ThreadedJobSystem
                 }
             }
 
-            public JobResult[] GetResults()
+            public JobResult[] GetResults(int limit)
             {
                 int resultCount = resultQueue.Count;
-                JobResult[] results = new JobResult[resultCount];
                 if (resultCount <= 0)
                 {
-                    return results;
+                    return new JobResult[0];
                 }
+
+                int numberOfResultsToRetrieve = limit > 0 ? Mathf.Min(resultCount, limit) : resultCount;
+                JobResult[] results = new JobResult[numberOfResultsToRetrieve];
 
                 lock (resultQueue)
                 {
-                    for (int i = 0; i < resultCount; i++)
+                    for (int i = 0; i < numberOfResultsToRetrieve; i++)
                     {
                         results[i] = resultQueue.Dequeue();
                     }

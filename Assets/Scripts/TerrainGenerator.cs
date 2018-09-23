@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-
     const float viewerMoveThresholdForChunkUpdate = 5f;
     const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
+
+    public event System.Action OnInitialTerrainLoaded;
 
     public int colliderLODIndex;
     public LODInfo[] detailLevels;
@@ -27,6 +28,8 @@ public class TerrainGenerator : MonoBehaviour
     private Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     private List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
+    private int initialChunkLoadCount;
+
     private void Start()
     {
         textureSettings.ApplyToMaterial(terrainMaterial);
@@ -36,7 +39,9 @@ public class TerrainGenerator : MonoBehaviour
         meshWorldSize = meshSettings.meshWorldSize;
         chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
 
-        UpdateVisibleChunks();
+        initialChunkLoadCount = 0;
+        UpdateVisibleChunks(true);
+        CheckIfInitialLoadComplete();
     }
 
     private void Update()
@@ -45,14 +50,7 @@ public class TerrainGenerator : MonoBehaviour
 
         if (viewerPos != viewerPosPrevChunkCheck || !addedFirstCollider)
         {
-            foreach (TerrainChunk chunk in visibleTerrainChunks)
-            {
-                chunk.UpdateCollisionMesh();
-                if (!addedFirstCollider && chunk.hasSetCollider)
-                {
-                    addedFirstCollider = true;
-                }
-            }
+            UpdateVisibleChunkColliders();
         }
 
         if ((viewerPosPrevChunkCheck - viewerPos).sqrMagnitude > sqrViewerMoveThresholdForChunkUpdate)
@@ -62,7 +60,20 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
 
-    private void UpdateVisibleChunks()
+    private void UpdateVisibleChunkColliders()
+    {
+        foreach (TerrainChunk chunk in visibleTerrainChunks)
+        {
+            chunk.UpdateCollisionMesh();
+            if (!addedFirstCollider && chunk.hasSetCollider)
+            {
+                addedFirstCollider = true;
+                CheckIfInitialLoadComplete();
+            }
+        }
+    }
+
+    private void UpdateVisibleChunks(bool initialLoad = false)
     {
         HashSet<Vector2> alreadyUpdatedChunkCoords = new HashSet<Vector2>();
         for (int i = visibleTerrainChunks.Count - 1; i >= 0; i--)
@@ -92,11 +103,30 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, terrainMaterial);
                     terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
-                    newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                    newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                    if (initialLoad)
+                    {
+                        initialChunkLoadCount++;
+                        newChunk.OnLodMeshUpdated += OnInitialMeshUpdated;
+                    }
                     newChunk.Load();
-
                 }
             }
+        }
+    }
+
+    private void OnInitialMeshUpdated(TerrainChunk chunk)
+    {
+        chunk.OnLodMeshUpdated -= OnInitialMeshUpdated;
+        initialChunkLoadCount--;
+        CheckIfInitialLoadComplete();
+    }
+
+    private void CheckIfInitialLoadComplete()
+    {
+        if (addedFirstCollider && initialChunkLoadCount <= 0 && OnInitialTerrainLoaded != null)
+        {
+            OnInitialTerrainLoaded();
         }
     }
 

@@ -7,23 +7,25 @@ public class LODMesh
     public bool hasRequestedMesh;
     public bool hasMesh;
     private readonly int lod;
-    public event System.Action updateCallback;
+    private readonly int lodIndex;
+    public event System.Action<int> OnMeshDataUpdated;
 
-    public LODMesh(int lod)
+    public LODMesh(int lodIndex, int lod)
     {
+        this.lodIndex = lodIndex;
         this.lod = lod;
     }
 
     public void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
     {
         hasRequestedMesh = true;
-        JobSystem.Run(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, lod), OnMeshDataReceived);
+        JobQueue.Run(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, lod), this.OnMeshDataReceived);
     }
 
     private void OnMeshDataReceived(object data)
     {
         mesh = ((MeshData)data).CreateMesh();
         hasMesh = true;
-        updateCallback();
+        OnMeshDataUpdated(lodIndex);
     }
 }

@@ -3,17 +3,17 @@ using ThreadedJobSystem;
 
 public class TerrainChunk
 {
-    const float colliderGenerationDistanceThreshold = 20f;
+    const float colliderGenerationDistanceThreshold = 200f;
     const float sqrColliderGenerationDistanceThreshold = colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold;
 
-    public event System.Action<TerrainChunk, bool> onVisibilityChanged;
+    public event System.Action<TerrainChunk> OnLodMeshUpdated;
+    public event System.Action<TerrainChunk, bool> OnVisibilityChanged;
     public Vector2 coord;
 
     public bool hasSetCollider { get; private set; }
 
     private GameObject meshObject;
     private Vector2 sampleCenter;
-    private Bounds bounds;
 
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
@@ -27,10 +27,13 @@ public class TerrainChunk
     private bool heightMapReceived;
     private int previousLODIndex = -1;
     private readonly float maxViewDst;
+    private readonly float sqrMaxViewDst;
 
-    HeightMapSettings heightMapSettings;
-    MeshSettings meshSettings;
-    Transform viewer;
+    private bool initiallyLoaded;
+
+    private readonly HeightMapSettings heightMapSettings;
+    private readonly MeshSettings meshSettings;
+    private readonly Transform viewer;
 
     public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
     {
@@ -43,7 +46,6 @@ public class TerrainChunk
 
         sampleCenter = coord * meshSettings.meshWorldSize / meshSettings.meshScale;
         Vector2 position = coord * meshSettings.meshWorldSize;
-        bounds = new Bounds(position, Vector2.one * meshSettings.meshWorldSize);
 
         meshObject = new GameObject("Terrain Chunk");
         meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -56,22 +58,23 @@ public class TerrainChunk
         SetVisible(false);
 
         lodMeshes = new LODMesh[detailLevels.Length];
-        for (int i = 0; i < detailLevels.Length; i++)
+        for (int lodIndex = 0; lodIndex < detailLevels.Length; lodIndex++)
         {
-            lodMeshes[i] = new LODMesh(detailLevels[i].lod);
-            lodMeshes[i].updateCallback += UpdateTerrainChunk;
-            if (i == colliderLODIndex)
+            lodMeshes[lodIndex] = new LODMesh(lodIndex, detailLevels[lodIndex].lod);
+            lodMeshes[lodIndex].OnMeshDataUpdated += SetLodMesh;
+            if (lodIndex == colliderLODIndex)
             {
-                lodMeshes[i].updateCallback += UpdateCollisionMesh;
+                lodMeshes[lodIndex].OnMeshDataUpdated += SetCollisionMesh;
             }
         }
 
         maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
+        sqrMaxViewDst = (maxViewDst * maxViewDst);
     }
 
     public void Load()
     {
-        JobSystem.Run(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), OnHeightMapReceived);
+        JobQueue.Run(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
     }
 
     private void OnHeightMapReceived(object data)
@@ -91,11 +94,6 @@ public class TerrainChunk
         }
     }
 
-    private void OnMeshDataReceived(MeshData meshData)
-    {
-        meshFilter.mesh = meshData.CreateMesh();
-    }
-
     public void UpdateTerrainChunk()
     {
         if (!heightMapReceived)
@@ -103,46 +101,45 @@ public class TerrainChunk
             return;
         }
 
-
-        float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
+        float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
         bool wasVisible = IsVisible();
-        bool visible = viewerDstFromNearestEdge <= maxViewDst;
+        bool visible = sqrViewerDstFromCenter <= sqrMaxViewDst;
         if (visible)
         {
             int lodIndex = 0;
             for (int i = 0; i < detailLevels.Length - 1; i++)
             {
-                if (viewerDstFromNearestEdge > detailLevels[i].visibleDstThreshold)
-                {
-                    lodIndex = i + 1;
-                }
-                else
+                if (detailLevels[i].sqrVisibleDstThreshold > sqrViewerDstFromCenter)
                 {
                     break;
                 }
+                lodIndex = i + 1;
             }
 
-            if (lodIndex != previousLODIndex)
+            if (!lodMeshes[lodIndex].hasRequestedMesh)
             {
-                LODMesh lodMesh = lodMeshes[lodIndex];
-                if (lodMesh.hasMesh)
-                {
-                    meshFilter.mesh = lodMesh.mesh;
-                    previousLODIndex = lodIndex;
-                }
-                else if (!lodMesh.hasRequestedMesh)
-                {
-                    lodMesh.RequestMesh(mapData, meshSettings);
-                }
+                lodMeshes[lodIndex].RequestMesh(mapData, meshSettings);
+            }
+            else
+            {
+                SetLodMesh(lodIndex);
+            }
+        }
+        else if (!initiallyLoaded)
+        {
+            initiallyLoaded = true;
+            if (OnLodMeshUpdated != null)
+            {
+                OnLodMeshUpdated(this);
             }
         }
 
         if (wasVisible != visible)
         {
             SetVisible(visible);
-            if (onVisibilityChanged != null)
+            if (OnVisibilityChanged != null)
             {
-                onVisibilityChanged(this, visible);
+                OnVisibilityChanged(this, visible);
             }
         }
     }
@@ -154,24 +151,63 @@ public class TerrainChunk
             return;
         }
 
-        float sqrDstFromViewerToEdge = bounds.SqrDistance(viewerPosition);
-
-        if (sqrDstFromViewerToEdge < detailLevels[colliderLODIndex].sqrVisibleDstThreshold)
+        float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
+        if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
         {
-            if (!lodMeshes[colliderLODIndex].hasRequestedMesh)
-            {
-                lodMeshes[colliderLODIndex].RequestMesh(mapData, meshSettings);
-            }
+            return;
         }
 
-        if (sqrDstFromViewerToEdge < sqrColliderGenerationDistanceThreshold)
+        if (!lodMeshes[colliderLODIndex].hasRequestedMesh)
         {
-            if (lodMeshes[colliderLODIndex].hasMesh)
-            {
-                meshCollider.sharedMesh = lodMeshes[colliderLODIndex].mesh;
-                hasSetCollider = true;
-            }
+            lodMeshes[colliderLODIndex].RequestMesh(mapData, meshSettings);
         }
+        else
+        {
+            SetCollisionMesh(colliderLODIndex);
+        }
+    }
+
+    private void SetLodMesh(int lodIndex)
+    {
+        if (lodIndex == previousLODIndex)
+        {
+            return;
+        }
+
+        LODMesh lodMesh = lodMeshes[lodIndex];
+        if (!lodMesh.hasMesh)
+        {
+            return;
+        }
+
+        meshFilter.mesh = lodMesh.mesh;
+        previousLODIndex = lodIndex;
+        if (OnLodMeshUpdated != null)
+        {
+            OnLodMeshUpdated(this);
+        }
+    }
+
+    private void SetCollisionMesh(int lod)
+    {
+        if (lod != colliderLODIndex)
+        {
+            return;
+        }
+
+        if (!lodMeshes[colliderLODIndex].hasMesh)
+        {
+            return;
+        }
+
+        float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
+        if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
+        {
+            return;
+        }
+
+        meshCollider.sharedMesh = lodMeshes[colliderLODIndex].mesh;
+        hasSetCollider = true;
     }
 
     public void SetVisible(bool visible)

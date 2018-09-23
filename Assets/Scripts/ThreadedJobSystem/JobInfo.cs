@@ -2,7 +2,7 @@
 
 namespace ThreadedJobSystem
 {
-    public partial class JobSystem
+    public partial class JobQueue
     {
         private struct JobInfo
         {
