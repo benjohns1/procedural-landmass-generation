@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class Noise
+public class Noise
 {
     public enum NormalizeMode { Local, Global }
 
@@ -71,7 +71,7 @@ public static class Noise
         return noiseMap;
     }
 
-    public static Vector2[] GenerateOffsets(NoiseSettings settings, ref float maxPossibleHeight, float amplitude, float frequency, Vector2 sampleCenter)
+    private static Vector2[] GenerateOffsets(NoiseSettings settings, ref float maxPossibleHeight, float amplitude, float frequency, Vector2 sampleCenter)
     {
         System.Random prng = new System.Random(settings.seed);
         Vector2[] octaveOffsets = new Vector2[settings.octaves];

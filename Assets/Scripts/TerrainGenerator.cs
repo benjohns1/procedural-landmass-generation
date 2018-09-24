@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using NoiseGenerator;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class TerrainGenerator : MonoBehaviour
     const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
     public event System.Action OnInitialTerrainLoaded;
+
+    public bool autoUpdate;
+    public bool noiseSettingsFoldout;
+    public NoiseGenerator.NoiseSettings noiseSettings;
 
     public int colliderLODIndex;
     public LODInfo[] detailLevels;
@@ -17,6 +22,8 @@ public class TerrainGenerator : MonoBehaviour
 
     public Transform viewer;
     public Material terrainMaterial;
+
+    private GameObject chunkParent;
 
     private Vector2 viewerPos;
     private Vector2 viewerPosPrevChunkCheck;
@@ -30,18 +37,39 @@ public class TerrainGenerator : MonoBehaviour
 
     private int initialChunkLoadCount;
 
+    public void GenerateTerrainEditorPreview()
+    {
+        ClearTerrainChunks();
+        GenerateTerrain();
+    }
+
+    public void ClearTerrainChunks()
+    {
+        foreach (TerrainChunk chunk in terrainChunkDictionary.Values)
+        {
+            chunk.DestroyGameObject();
+        }
+        terrainChunkDictionary.Clear();
+        visibleTerrainChunks.Clear();
+
+        if (chunkParent != null)
+        {
+            Object.DestroyImmediate(chunkParent);
+        }
+    }
+
+    public void OnNoiseSettingsUpdated()
+    {
+        if (!autoUpdate)
+        {
+            return;
+        }
+        GenerateTerrainEditorPreview();
+    }
+
     private void Start()
     {
-        textureSettings.ApplyToMaterial(terrainMaterial);
-        textureSettings.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
-
-        float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
-        meshWorldSize = meshSettings.meshWorldSize;
-        chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
-
-        initialChunkLoadCount = 0;
-        UpdateVisibleChunks(true);
-        CheckIfInitialLoadComplete();
+        GenerateTerrain(true);
     }
 
     private void Update()
@@ -58,6 +86,26 @@ public class TerrainGenerator : MonoBehaviour
             viewerPosPrevChunkCheck = viewerPos;
             UpdateVisibleChunks();
         }
+    }
+
+    private void GenerateTerrain(bool initialLoad = false)
+    {
+        textureSettings.ApplyToMaterial(terrainMaterial);
+        textureSettings.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+
+        float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
+        meshWorldSize = meshSettings.meshWorldSize;
+        chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
+
+        if (chunkParent == null)
+        {
+            chunkParent = new GameObject("Terrain Chunks");
+            chunkParent.transform.parent = transform;
+        }
+
+        initialChunkLoadCount = 0;
+        UpdateVisibleChunks(initialLoad);
+        CheckIfInitialLoadComplete();
     }
 
     private void UpdateVisibleChunkColliders()
@@ -101,7 +149,7 @@ public class TerrainGenerator : MonoBehaviour
                 }
                 else
                 {
-                    TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, terrainMaterial);
+                    TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, chunkParent.transform, viewer, terrainMaterial);
                     terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                     newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                     if (initialLoad)

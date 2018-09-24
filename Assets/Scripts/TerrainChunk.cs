@@ -77,6 +77,11 @@ public class TerrainChunk
         JobQueue.Run(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
     }
 
+    public void DestroyGameObject()
+    {
+        Object.DestroyImmediate(meshObject);
+    }
+
     private void OnHeightMapReceived(object data)
     {
         HeightMap mapData = (HeightMap)data;

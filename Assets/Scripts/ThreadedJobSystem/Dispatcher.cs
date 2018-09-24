@@ -55,6 +55,16 @@ namespace ThreadedJobSystem
                 return results;
             }
 
+            public int GetJobQueueCount()
+            {
+                return jobQueue.Count;
+            }
+
+            public int GetResultQueueCount()
+            {
+                return resultQueue.Count;
+            }
+
             private void StartDispatchThread()
             {
                 ThreadStart dispatchThread = delegate
