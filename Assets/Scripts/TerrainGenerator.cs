@@ -4,14 +4,12 @@ using NoiseGenerator;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    const string chunkParentName = "Terrain Chunks";
+    const string chunkParentNameEditor = "Terrain Chunks (editor)";
     const float viewerMoveThresholdForChunkUpdate = 5f;
     const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
     public event System.Action OnInitialTerrainLoaded;
-
-    public bool autoUpdate;
-    public bool noiseSettingsFoldout;
-    public NoiseGenerator.NoiseSettings noiseSettings;
 
     public int colliderLODIndex;
     public LODInfo[] detailLevels;
@@ -23,7 +21,7 @@ public class TerrainGenerator : MonoBehaviour
     public Transform viewer;
     public Material terrainMaterial;
 
-    private GameObject chunkParent;
+    private Transform chunkParent;
 
     private Vector2 viewerPos;
     private Vector2 viewerPosPrevChunkCheck;
@@ -37,11 +35,13 @@ public class TerrainGenerator : MonoBehaviour
 
     private int initialChunkLoadCount;
 
+#if UNITY_EDITOR
     public void GenerateTerrainEditorPreview()
     {
         ClearTerrainChunks();
         GenerateTerrain();
     }
+#endif
 
     public void ClearTerrainChunks()
     {
@@ -52,23 +52,34 @@ public class TerrainGenerator : MonoBehaviour
         terrainChunkDictionary.Clear();
         visibleTerrainChunks.Clear();
 
+        if (chunkParent == null)
+        {
+            if (Application.isPlaying)
+            {
+                chunkParent = transform.Find(chunkParentName);
+
+                // Deactivate any chunks generated from within editor
+                Transform editorChunkParent = transform.Find(chunkParentNameEditor);
+                if (editorChunkParent != null)
+                {
+                    editorChunkParent.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                chunkParent = transform.Find(chunkParentNameEditor);
+            }
+        }
+
         if (chunkParent != null)
         {
-            Object.DestroyImmediate(chunkParent);
+            Object.DestroyImmediate(chunkParent.gameObject);
         }
-    }
-
-    public void OnNoiseSettingsUpdated()
-    {
-        if (!autoUpdate)
-        {
-            return;
-        }
-        GenerateTerrainEditorPreview();
     }
 
     private void Start()
     {
+        ClearTerrainChunks();
         GenerateTerrain(true);
     }
 
@@ -99,8 +110,8 @@ public class TerrainGenerator : MonoBehaviour
 
         if (chunkParent == null)
         {
-            chunkParent = new GameObject("Terrain Chunks");
-            chunkParent.transform.parent = transform;
+            chunkParent = new GameObject(Application.isPlaying ? chunkParentName : chunkParentNameEditor).transform;
+            chunkParent.parent = transform;
         }
 
         initialChunkLoadCount = 0;

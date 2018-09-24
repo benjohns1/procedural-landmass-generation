@@ -3,7 +3,7 @@
 [CreateAssetMenu()]
 public class HeightMapSettings : UpdatableData
 {
-    public NoiseSettings noiseSettings;
+    public NoiseGenerator.NoiseSettings noiseSettings;
 
     public bool useFalloff;
 
@@ -30,8 +30,18 @@ public class HeightMapSettings : UpdatableData
 
     protected override void OnValidate()
     {
-        noiseSettings.ValidateValues();
+        if (noiseSettings != null)
+        {
+            noiseSettings.OnValuesUpdated -= OnChildValuesUpdated;
+            noiseSettings.OnValuesUpdated += OnChildValuesUpdated;
+            noiseSettings.Validate();
+        }
         base.OnValidate();
+    }
+
+    private void OnChildValuesUpdated()
+    {
+        NotifyOfUpdatedValues();
     }
 
 #endif

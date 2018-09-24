@@ -4,6 +4,8 @@ namespace NoiseGenerator
 {
     public interface IFilter
     {
-        float Evaluate(Vector3 point);
+        float Evaluate(Vector2 point, float previousValue);
+        float GetMin();
+        float GetMax();
     }
 }
