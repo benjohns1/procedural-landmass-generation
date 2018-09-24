@@ -6,6 +6,8 @@ namespace NoiseGenerator.Filters
     {
         private AnimationCurve threadSafeCurve;
         private MinMaxFloat minMax;
+        private float globalMin;
+        private float globalMax;
 
         public Curve(FilterSettings.Curve settings)
         {
@@ -16,6 +18,12 @@ namespace NoiseGenerator.Filters
                 float val = threadSafeCurve[i].value;
                 minMax.AddValue(val);
             }
+        }
+
+        public void Setup(float globalMin, float globalMax)
+        {
+            this.globalMin = globalMin;
+            this.globalMax = globalMax;
         }
 
         public float GetMin()
@@ -30,7 +38,10 @@ namespace NoiseGenerator.Filters
 
         public float Evaluate(Vector2 point, float previousValue)
         {
-            return threadSafeCurve.Evaluate(previousValue);
+            float t = Mathf.InverseLerp(globalMin, globalMax, previousValue);
+            float newT = threadSafeCurve.Evaluate(t);
+            float clamped = Mathf.Clamp01(newT);
+            return Mathf.Lerp(globalMin, globalMax, newT);
         }
     }
 }

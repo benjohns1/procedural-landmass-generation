@@ -1,49 +1,61 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace NoiseGenerator
 {
     public class NoiseMap
     {
-        private IFilter[] filters;
-        private NoiseSettings settings;
+        private NoiseLayer[] layers;
         public float Min { get; private set; }
         public float Max { get; private set; }
 
         public NoiseMap(NoiseSettings settings)
         {
-            this.settings = settings;
-
-            filters = new IFilter[settings.noiseLayers.Length];
             float min = 0;
             float max = 0;
-            for (int i = 0; i < settings.noiseLayers.Length; i++)
+            List<NoiseLayer> enabledLayers= new List<NoiseLayer>();
+            foreach (NoiseLayer layer in settings.noiseLayers)
             {
-                if (!settings.noiseLayers[i].enabled)
+                if (!layer.enabled)
                 {
                     continue;
                 }
-                filters[i] = FilterFactory.CreateFilter(settings.noiseLayers[i].settings);
+
+                // Instantiate filters
+                layer.filter = FilterFactory.CreateFilter(layer.settings);
 
                 // Calculate min/max
-                switch (settings.noiseLayers[i].layerType)
+                switch (layer.layerOperator)
                 {
-                    case NoiseLayer.LayerType.Set:
-                        min = filters[i].GetMin();
-                        max = filters[i].GetMax();
+                    case NoiseLayer.LayerOperator.Set:
+                        min = layer.filter.GetMin();
+                        max = layer.filter.GetMax();
                         break;
-                    case NoiseLayer.LayerType.Add:
-                        min += filters[i].GetMin();
-                        max += filters[i].GetMax();
+                    case NoiseLayer.LayerOperator.Add:
+                        min += layer.filter.GetMin();
+                        max += layer.filter.GetMax();
                         break;
-                    case NoiseLayer.LayerType.Multiply:
-                        min *= filters[i].GetMin();
-                        max *= filters[i].GetMax();
+                    case NoiseLayer.LayerOperator.Multiply:
+                        min *= layer.filter.GetMin();
+                        max *= layer.filter.GetMax();
                         break;
+                    default:
+                        throw new System.Exception("Unknown noise layer operator");
                 }
+
+                enabledLayers.Add(layer);
             }
 
+            // Set global min/max values
+            this.layers = enabledLayers.ToArray();
             this.Min = min;
             this.Max = max;
+
+            // Call filter setup methods
+            foreach (NoiseLayer layer in layers)
+            {
+                layer.filter.Setup(this.Min, this.Max);
+            }
         }
 
         public float[,] GenerateRegion(int width, int height, Vector2 startPoint)
@@ -65,23 +77,21 @@ namespace NoiseGenerator
                 {
                     float value = 0;
                     Vector2 point = new Vector2(x + startPoint.x, y - startPoint.y);
-                    for (int i = 0; i < filters.Length; i++)
+                    foreach (NoiseLayer layer in layers)
                     {
-                        if (filters[i] == null)
+                        switch (layer.layerOperator)
                         {
-                            continue;
-                        }
-                        switch (settings.noiseLayers[i].layerType)
-                        {
-                            case NoiseLayer.LayerType.Set:
-                                value = filters[i].Evaluate(point, value);
+                            case NoiseLayer.LayerOperator.Set:
+                                value = layer.filter.Evaluate(point, value);
                                 break;
-                            case NoiseLayer.LayerType.Add:
-                                value += filters[i].Evaluate(point, value);
+                            case NoiseLayer.LayerOperator.Add:
+                                value += layer.filter.Evaluate(point, value);
                                 break;
-                            case NoiseLayer.LayerType.Multiply:
-                                value *= filters[i].Evaluate(point, value);
+                            case NoiseLayer.LayerOperator.Multiply:
+                                value *= layer.filter.Evaluate(point, value);
                                 break;
+                            default:
+                                throw new System.Exception("Unknown noise layer operator");
                         }
                     }
                     noiseMap[x, y] = value;

@@ -11,6 +11,10 @@ namespace NoiseGenerator.Filters
             this.settings = settings;
         }
 
+        public void Setup(float globalMin, float globalMax)
+        {
+        }
+
         public float GetMin()
         {
             return settings.value;

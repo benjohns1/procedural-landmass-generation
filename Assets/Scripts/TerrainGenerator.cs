@@ -36,6 +36,8 @@ public class TerrainGenerator : MonoBehaviour
     private int initialChunkLoadCount;
 
 #if UNITY_EDITOR
+    public bool heightMapFoldout;
+    public bool noiseMapFoldout;
     public void GenerateTerrainEditorPreview()
     {
         ClearTerrainChunks();
