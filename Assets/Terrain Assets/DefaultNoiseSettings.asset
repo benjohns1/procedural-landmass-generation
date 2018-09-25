@@ -13,138 +13,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdatePreview: 1
   noiseLayers:
-  - enabled: 1
-    layerType: 1
+  - layerOperator: 1
+    enabled: 1
     settings:
       filterType: 0
       perlinSettings:
-        scale: 2000
-        multiplier: 100
+        scale: 1000
+        multiplier: 200
+        octaves: 2
+        persistence: 0.6
+        lacunarity: 2
+        seed: 0
+        offset: {x: 0, y: 0}
+      constantSettings:
+        value: 0
+  - layerOperator: 1
+    enabled: 1
+    settings:
+      filterType: 0
+      perlinSettings:
+        scale: 200
+        multiplier: 60
         octaves: 3
         persistence: 0.6
         lacunarity: 2
         seed: 0
         offset: {x: 0, y: 0}
-      curveSettings:
-        curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
       constantSettings:
         value: 0
-  - enabled: 0
-    layerType: 2
-    settings:
-      filterType: 1
-      perlinSettings:
-        scale: 33.36
-        multiplier: 1
-        octaves: 2
-        persistence: 0.5
-        lacunarity: 3
-        seed: 0
-        offset: {x: 250, y: 0}
-      curveSettings:
-        curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-      constantSettings:
-        value: 0
-  - enabled: 0
-    layerType: 1
+  - layerOperator: 1
+    enabled: 1
     settings:
       filterType: 0
       perlinSettings:
         scale: 80
-        multiplier: 15
-        octaves: 4
+        multiplier: 10
+        octaves: 5
         persistence: 0.6
-        lacunarity: 2.1
+        lacunarity: 2
         seed: 0
         offset: {x: 0, y: 0}
-      curveSettings:
-        curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.15687974
-            value: 0.007508028
-            inSlope: 0.23481208
-            outSlope: 0.23481208
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.7838939
-            value: 0.99882996
-            inSlope: -0.03223172
-            outSlope: -0.03223172
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.1218596
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: -0
-            outSlope: -0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.24354525
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
       constantSettings:
-        value: 0
+        value: -200

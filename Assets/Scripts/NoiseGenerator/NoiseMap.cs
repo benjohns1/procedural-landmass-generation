@@ -71,6 +71,11 @@ namespace NoiseGenerator
 
             float[,] noiseMap = new float[width, height];
 
+            foreach (NoiseLayer layer in layers)
+            {
+                layer.filter.StartNewRegion(width, height);
+            }
+
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -82,13 +87,13 @@ namespace NoiseGenerator
                         switch (layer.layerOperator)
                         {
                             case NoiseLayer.LayerOperator.Set:
-                                value = layer.filter.Evaluate(point, value);
+                                value = layer.filter.Evaluate(point);
                                 break;
                             case NoiseLayer.LayerOperator.Add:
-                                value += layer.filter.Evaluate(point, value);
+                                value += layer.filter.Evaluate(point);
                                 break;
                             case NoiseLayer.LayerOperator.Multiply:
-                                value *= layer.filter.Evaluate(point, value);
+                                value *= layer.filter.Evaluate(point);
                                 break;
                             default:
                                 throw new System.Exception("Unknown noise layer operator");

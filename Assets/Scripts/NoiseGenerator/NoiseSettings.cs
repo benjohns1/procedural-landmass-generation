@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using Utilities;
 
 namespace NoiseGenerator
 {
     [CreateAssetMenu()]
-    public class NoiseSettings : UpdatableData
+    public class NoiseSettings : UpdatableSettings
     {
         public NoiseLayer[] noiseLayers;
 

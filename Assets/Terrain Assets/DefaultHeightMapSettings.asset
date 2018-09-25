@@ -11,10 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2fdcbab189752744b34f317b1de4af1, type: 3}
   m_Name: DefaultHeightMapSettings
   m_EditorClassIdentifier: 
-  autoUpdatePreview: 0
+  autoUpdatePreview: 1
   noiseSettings: {fileID: 11400000, guid: 056659d3e42bd224088f7e1df61ca4c0, type: 2}
-  useFalloff: 1
-  heightMultiplier: 50
+  useFalloff: 0
+  heightMultiplier: 200
   heightCurve:
     serializedVersion: 2
     m_Curve:

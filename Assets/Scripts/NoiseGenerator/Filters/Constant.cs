@@ -25,7 +25,11 @@ namespace NoiseGenerator.Filters
             return settings.value;
         }
 
-        public float Evaluate(Vector2 point, float previousValue)
+        public void StartNewRegion(int width, int height)
+        {
+        }
+
+        public float Evaluate(Vector2 point)
         {
             return settings.value;
         }

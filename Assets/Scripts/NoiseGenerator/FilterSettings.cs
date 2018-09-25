@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
+using Utilities;
 
 namespace NoiseGenerator
 {
     [System.Serializable]
     public class FilterSettings
     {
-        public enum FilterType { Perlin, Curve, Constant };
+        public enum FilterType { Perlin, Constant, Falloff };
         public FilterType filterType;
 
         [ConditionalHide("filterType", 0)]
         public Perlin perlinSettings;
 
         [ConditionalHide("filterType", 1)]
-        public Curve curveSettings;
-
-        [ConditionalHide("filterType", 2)]
         public Constant constantSettings;
 
         [System.Serializable]
@@ -38,12 +36,6 @@ namespace NoiseGenerator
                 lacunarity = Mathf.Max(lacunarity, 1);
                 persistence = Mathf.Clamp01(persistence);
             }
-        }
-
-        [System.Serializable]
-        public class Curve
-        {
-            public AnimationCurve curve;
         }
 
         [System.Serializable]

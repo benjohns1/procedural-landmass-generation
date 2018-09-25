@@ -23,6 +23,10 @@ namespace NoiseGenerator.Filters
         {
         }
 
+        public void StartNewRegion(int width, int height)
+        {
+        }
+
         public float GetMin()
         {
             return minValue;
@@ -62,7 +66,7 @@ namespace NoiseGenerator.Filters
             this.octaveOffsets = octaveOffsets;
         }
 
-        public float Evaluate(Vector2 point, float previousValue)
+        public float Evaluate(Vector2 point)
         {
             float value = 0;
             float amplitude = 1;

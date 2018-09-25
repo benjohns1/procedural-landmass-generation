@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
+using WorldGenerator;
 
 public class FreezeUntilInitialLoad : MonoBehaviour
 {
-    private TerrainGenerator terrainGenerator;
+    public TerrainGenerator terrainGenerator;
     private RigidbodyConstraints initialConstraints;
     private Rigidbody rb;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         initialConstraints = rb.constraints;
         rb.constraints = RigidbodyConstraints.FreezeAll;
-        terrainGenerator = Object.FindObjectOfType<TerrainGenerator>();
         terrainGenerator.OnInitialTerrainLoaded += TerrainGenerator_OnInitialTerrainLoaded;
         Debug.Log("Loading terrain...");
     }

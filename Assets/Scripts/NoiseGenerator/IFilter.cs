@@ -5,7 +5,8 @@ namespace NoiseGenerator
     public interface IFilter
     {
         void Setup(float globalMin, float globalMax);
-        float Evaluate(Vector2 point, float previousValue);
+        void StartNewRegion(int width, int height);
+        float Evaluate(Vector2 point);
         float GetMin();
         float GetMax();
     }
