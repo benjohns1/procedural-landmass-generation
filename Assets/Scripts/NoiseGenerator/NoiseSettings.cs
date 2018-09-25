@@ -8,12 +8,22 @@ namespace NoiseGenerator
     {
         public NoiseLayer[] noiseLayers;
 
-        public void Validate()
+#if UNITY_EDITOR
+
+        protected override void OnValidate()
         {
             foreach (NoiseLayer layer in noiseLayers)
             {
                 layer.settings.Validate();
             }
+            base.OnValidate();
         }
+
+        private void OnChildValuesUpdated()
+        {
+            NotifyOfUpdatedValues();
+        }
+
+#endif
     }
 }

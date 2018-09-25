@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NoiseGenerator;
+using UnityEngine;
 
 namespace WorldGenerator
 {
@@ -14,7 +15,7 @@ namespace WorldGenerator
             return texture;
         }
 
-        public static Texture2D TextureFromHeightMap(HeightMap heightMap)
+        public static Texture2D TextureFromHeightMap(Region heightMap)
         {
             int width = heightMap.values.GetLength(0);
             int height = heightMap.values.GetLength(1);

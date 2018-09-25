@@ -30,6 +30,11 @@ namespace ThreadedJobSystem
             return results.Length;
         }
 
+        public static JobError[] GetErrors(int maxErrors = 0)
+        {
+           return dispatcher.GetErrors(maxErrors);
+        }
+
         public static int GetJobQueueCount()
         {
             return dispatcher.GetJobQueueCount();
@@ -38,6 +43,11 @@ namespace ThreadedJobSystem
         public static int GetResultQueueCount()
         {
             return dispatcher.GetResultQueueCount();
+        }
+
+        public static int GetErrorQueueCount()
+        {
+            return dispatcher.GetErrorQueueCount();
         }
 
         private void Awake()

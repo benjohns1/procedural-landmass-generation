@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NoiseGenerator;
+using UnityEngine;
 
 namespace WorldGenerator
 {
@@ -8,11 +9,12 @@ namespace WorldGenerator
         public MeshFilter meshFilter;
         public MeshRenderer meshRenderer;
 
-        public enum DrawMode { Mesh, NoiseMap, FalloffMap }
+        public enum DrawMode { Mesh, NoiseMap }
         public DrawMode drawMode;
 
+        public Vector2 offset = Vector2.zero;
         public MeshSettings meshSettings;
-        public HeightMapSettings heightMapSettings;
+        public NoiseSettings heightMapSettings;
         public TextureSettings textureSettings;
 
         public Material terrainMaterial;
@@ -20,6 +22,13 @@ namespace WorldGenerator
         [Range(0, MeshSettings.numSupportedLODs - 1)]
         public int editorPreviewLOD;
         public bool autoUpdate;
+
+        [HideInInspector]
+        public bool heightMapFoldout;
+        [HideInInspector]
+        public bool textureFoldout;
+        [HideInInspector]
+        public bool meshFoldout;
 
         public void DrawMesh(MeshData meshData)
         {
@@ -38,14 +47,13 @@ namespace WorldGenerator
 
         public void DrawPreviewInEditor()
         {
-            HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
+            Region heightMap = RegionGenerator.GenerateRegion(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, offset, true);
             textureSettings.ApplyToMaterial(terrainMaterial);
             textureSettings.UpdateMeshHeights(terrainMaterial, heightMap.minValue, heightMap.maxValue);
 
             switch (drawMode)
             {
                 case DrawMode.Mesh:
-                default:
                     DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, editorPreviewLOD));
                     break;
                 case DrawMode.NoiseMap:

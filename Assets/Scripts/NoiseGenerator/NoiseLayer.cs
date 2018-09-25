@@ -10,6 +10,6 @@ namespace NoiseGenerator
 
         public bool enabled = true;
         public FilterSettings settings;
-        public IFilter filter;
+        public Filter filter;
     }
 }

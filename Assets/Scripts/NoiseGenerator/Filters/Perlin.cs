@@ -2,39 +2,31 @@
 
 namespace NoiseGenerator.Filters
 {
-    public class Perlin : IFilter
+    public class Perlin : Filter
     {
         private const int perlinSampleMin = -100000;
         private const int perlinSampleMax = 100000;
 
         private FilterSettings.Perlin settings;
         private Vector2[] octaveOffsets;
-        private float minValue;
-        private float maxValue;
+        private float minValue = 0;
+        private float maxValue = 0;
+
+        public override float GetGlobalMin()
+        {
+            return minValue;
+        }
+
+        public override float GetGlobalMax()
+        {
+            return maxValue;
+        }
 
         public Perlin(FilterSettings.Perlin settings)
         {
             settings.Validate();
             this.settings = settings;
             CalculateSettings();
-        }
-
-        public void Setup(float globalMin, float globalMax)
-        {
-        }
-
-        public void StartNewRegion(int width, int height)
-        {
-        }
-
-        public float GetMin()
-        {
-            return minValue;
-        }
-
-        public float GetMax()
-        {
-            return maxValue;
         }
 
         private void CalculateSettings()
@@ -66,7 +58,7 @@ namespace NoiseGenerator.Filters
             this.octaveOffsets = octaveOffsets;
         }
 
-        public float Evaluate(Vector2 point)
+        public override float Evaluate(Vector2 point)
         {
             float value = 0;
             float amplitude = 1;

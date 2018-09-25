@@ -1,4 +1,5 @@
-﻿using ThreadedJobSystem;
+﻿using NoiseGenerator;
+using ThreadedJobSystem;
 using UnityEngine;
 
 namespace WorldGenerator
@@ -18,7 +19,7 @@ namespace WorldGenerator
             this.lod = lod;
         }
 
-        public void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
+        public void RequestMesh(Region heightMap, MeshSettings meshSettings)
         {
             hasRequestedMesh = true;
             JobQueue.Run(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, lod), this.OnMeshDataReceived);

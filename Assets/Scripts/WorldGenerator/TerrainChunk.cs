@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using ThreadedJobSystem;
+using NoiseGenerator;
 
 namespace WorldGenerator
 {
@@ -25,7 +26,7 @@ namespace WorldGenerator
         private readonly LODMesh[] lodMeshes;
         private readonly int colliderLODIndex;
 
-        private HeightMap mapData;
+        private Region mapData;
         private bool heightMapReceived;
         private int previousLODIndex = -1;
         private readonly float maxViewDst;
@@ -33,11 +34,11 @@ namespace WorldGenerator
 
         private bool initiallyLoaded;
 
-        private readonly HeightMapSettings heightMapSettings;
+        private readonly NoiseSettings heightMapSettings;
         private readonly MeshSettings meshSettings;
         private readonly Transform viewer;
 
-        public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
+        public TerrainChunk(Vector2 coord, NoiseSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
         {
             this.coord = coord;
             this.detailLevels = detailLevels;
@@ -76,7 +77,7 @@ namespace WorldGenerator
 
         public void Load()
         {
-            JobQueue.Run(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
+            JobQueue.Run(() => RegionGenerator.GenerateRegion(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
         }
 
         public void DestroyGameObject()
@@ -86,7 +87,7 @@ namespace WorldGenerator
 
         private void OnHeightMapReceived(object data)
         {
-            this.mapData = (HeightMap)data;
+            this.mapData = (Region)data;
             heightMapReceived = true;
 
             UpdateTerrainChunk();

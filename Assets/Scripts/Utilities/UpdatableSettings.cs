@@ -5,13 +5,13 @@ namespace Utilities
     public class UpdatableSettings : ScriptableObject
     {
         public event System.Action OnValuesUpdated;
-        public bool autoUpdatePreview;
+        public bool autoUpdate;
 
 #if UNITY_EDITOR
 
         protected virtual void OnValidate()
         {
-            if (autoUpdatePreview)
+            if (autoUpdate)
             {
                 UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
             }

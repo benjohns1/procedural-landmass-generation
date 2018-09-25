@@ -2,17 +2,24 @@
 
 namespace NoiseGenerator.Filters
 {
-    public class Constant : IFilter
+    public class Constant : global::Filter
     {
+
         private FilterSettings.Constant settings;
+
+        public override float GetGlobalMin()
+        {
+            return settings.value;
+        }
+
+        public override float GetGlobalMax()
+        {
+            return settings.value;
+        }
 
         public Constant(FilterSettings.Constant settings)
         {
             this.settings = settings;
-        }
-
-        public void Setup(float globalMin, float globalMax)
-        {
         }
 
         public float GetMin()
@@ -25,11 +32,7 @@ namespace NoiseGenerator.Filters
             return settings.value;
         }
 
-        public void StartNewRegion(int width, int height)
-        {
-        }
-
-        public float Evaluate(Vector2 point)
+        public override float Evaluate(Vector2 point)
         {
             return settings.value;
         }

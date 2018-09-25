@@ -7,8 +7,10 @@ namespace WorldGenerator
     public class TerrainEditor : Editor
     {
         TerrainGenerator terrainGenerator;
+        Editor biomeEditor;
         Editor heightMapEditor;
-        Editor noiseMapEditor;
+        Editor textureEditor;
+        Editor meshEditor;
 
         private void OnEnable()
         {
@@ -18,15 +20,14 @@ namespace WorldGenerator
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            DrawSettingsEditor(terrainGenerator.heightMapSettings, ref terrainGenerator.heightMapFoldout, ref heightMapEditor);
-            if (terrainGenerator.heightMapSettings != null)
-            {
-                DrawSettingsEditor(terrainGenerator.heightMapSettings.noiseSettings, ref terrainGenerator.noiseMapFoldout, ref noiseMapEditor);
-            }
+            DrawSettingsEditor(terrainGenerator.biomeSettings, ref terrainGenerator.biomeFoldout, ref biomeEditor);
+            DrawSettingsEditor(terrainGenerator.biomeSettings.heightSettings, ref terrainGenerator.heightMapFoldout, ref heightMapEditor);
+            DrawSettingsEditor(terrainGenerator.biomeSettings.textureSettings, ref terrainGenerator.textureFoldout, ref textureEditor);
+            DrawSettingsEditor(terrainGenerator.meshSettings, ref terrainGenerator.meshFoldout, ref meshEditor);
 
             if (GUILayout.Button("Generate Terrain"))
             {
-                terrainGenerator.GenerateTerrainEditorPreview();
+                terrainGenerator.GenerateTerrain();
             }
             if (GUILayout.Button("Clear All Terrain Chunks"))
             {

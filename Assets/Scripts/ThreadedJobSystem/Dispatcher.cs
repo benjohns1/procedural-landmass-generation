@@ -12,6 +12,7 @@ namespace ThreadedJobSystem
 
             private Queue<JobInfo> jobQueue = new Queue<JobInfo>();
             private Queue<JobResult> resultQueue = new Queue<JobResult>();
+            private Queue<JobError> errorQueue = new Queue<JobError>();
 
             private Thread dispatcherThread;
 
@@ -36,20 +37,30 @@ namespace ThreadedJobSystem
 
             public JobResult[] GetResults(int limit)
             {
-                int resultCount = resultQueue.Count;
-                if (resultCount <= 0)
+                return GetFromQueue(resultQueue, limit);
+            }
+
+            public JobError[] GetErrors(int limit)
+            {
+                return GetFromQueue(errorQueue, limit);
+            }
+
+            private T[] GetFromQueue<T>(Queue<T> queue, int limit)
+            {
+                int count = queue.Count;
+                if (count <= 0)
                 {
-                    return new JobResult[0];
+                    return new T[0];
                 }
 
-                int numberOfResultsToRetrieve = limit > 0 ? Mathf.Min(resultCount, limit) : resultCount;
-                JobResult[] results = new JobResult[numberOfResultsToRetrieve];
+                int numberToRetrieve = limit > 0 ? Mathf.Min(count, limit) : count;
+                T[] results = new T[numberToRetrieve];
 
                 lock (resultQueue)
                 {
-                    for (int i = 0; i < numberOfResultsToRetrieve; i++)
+                    for (int i = 0; i < numberToRetrieve; i++)
                     {
-                        results[i] = resultQueue.Dequeue();
+                        results[i] = queue.Dequeue();
                     }
                 }
                 return results;
@@ -63,6 +74,11 @@ namespace ThreadedJobSystem
             public int GetResultQueueCount()
             {
                 return resultQueue.Count;
+            }
+
+            public int GetErrorQueueCount()
+            {
+                return errorQueue.Count;
             }
 
             private void StartDispatchThread()
@@ -107,11 +123,22 @@ namespace ThreadedJobSystem
             private void RunJob(object rawJob)
             {
                 JobInfo jobInfo = (JobInfo)rawJob;
-                object resultData = jobInfo.job();
-                JobResult jobResult = new JobResult(jobInfo.callback, resultData);
-                lock (resultQueue)
+                try
                 {
-                    resultQueue.Enqueue(jobResult);
+                    object resultData = jobInfo.job();
+                    JobResult jobResult = new JobResult(jobInfo.callback, resultData);
+                    lock (resultQueue)
+                    {
+                        resultQueue.Enqueue(jobResult);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    JobError jobError = new JobError(jobInfo, ex);
+                    lock (errorQueue)
+                    {
+                        errorQueue.Enqueue(jobError);
+                    }
                 }
             }
         }

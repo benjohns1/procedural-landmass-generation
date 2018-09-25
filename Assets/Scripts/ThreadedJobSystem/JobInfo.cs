@@ -4,7 +4,7 @@ namespace ThreadedJobSystem
 {
     public partial class JobQueue
     {
-        private struct JobInfo
+        public struct JobInfo
         {
             public readonly Func<object> job;
             public readonly Action<object> callback;
