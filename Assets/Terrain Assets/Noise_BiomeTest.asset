@@ -9,49 +9,101 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64b06c438c8b52849a7b5d4a6e4e89dd, type: 3}
-  m_Name: DefaultNoiseSettings
+  m_Name: Noise_BiomeTest
   m_EditorClassIdentifier: 
-  autoUpdatePreview: 1
+  autoUpdate: 1
   noiseLayers:
   - layerOperator: 1
     enabled: 1
     settings:
-      filterType: 0
+      filterType: 2
       perlinSettings:
-        scale: 1000
-        multiplier: 200
-        octaves: 2
-        persistence: 0.6
-        lacunarity: 3
-        seed: 0
-        offset: {x: 0, y: 0}
-      constantSettings:
-        value: 0
-  - layerOperator: 1
-    enabled: 1
-    settings:
-      filterType: 0
-      perlinSettings:
-        scale: 200
-        multiplier: 60
-        octaves: 3
+        scale: 100
+        multiplier: 1
+        octaves: 6
         persistence: 0.6
         lacunarity: 2
         seed: 0
         offset: {x: 0, y: 0}
       constantSettings:
-        value: 0
-  - layerOperator: 1
+        value: 400
+      cellularSettings:
+        seed: 0
+        frequency: 0.001
+        distanceFunction: 2
+        cellTypes:
+          serializedVersion: 2
+          key0: {r: 0, g: 0, b: 0, a: 1}
+          key1: {r: 1, g: 1, b: 1, a: 1}
+          key2: {r: 1, g: 1, b: 1, a: 0}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 32768
+          ctime1: 65535
+          ctime2: 65535
+          ctime3: 65535
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 65535
+          atime2: 0
+          atime3: 0
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 1
+          m_NumColorKeys: 2
+          m_NumAlphaKeys: 2
+  - layerOperator: 2
     enabled: 1
     settings:
-      filterType: 0
+      filterType: 1
       perlinSettings:
-        scale: 80
-        multiplier: 10
-        octaves: 5
-        persistence: 0.55
+        scale: 100
+        multiplier: 1
+        octaves: 6
+        persistence: 0.6
         lacunarity: 2
         seed: 0
         offset: {x: 0, y: 0}
       constantSettings:
-        value: -200
+        value: 3
+      cellularSettings:
+        seed: 0
+        frequency: 0
+        distanceFunction: 0
+        cellTypes:
+          serializedVersion: 2
+          key0: {r: 1, g: 1, b: 1, a: 1}
+          key1: {r: 0, g: 0, b: 0, a: 1}
+          key2: {r: 0, g: 0, b: 0, a: 0}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 27371
+          ctime1: 65535
+          ctime2: 65535
+          ctime3: 65535
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 65535
+          atime2: 0
+          atime3: 0
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 1
+          m_NumColorKeys: 2
+          m_NumAlphaKeys: 2

@@ -9,7 +9,11 @@ namespace WorldGenerator
     {
         public NoiseSettings heightSettings;
         public TextureSettings textureSettings;
+        public float frequency = 1f;
+
         public Material TerrainMaterial { get; private set; }
+        [HideInInspector]
+        public float worldMapBiomeId;
 
         public void Initialize(int width, int height, Material baseMaterial)
         {

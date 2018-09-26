@@ -20,10 +20,11 @@ namespace WorldGenerator
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            DrawSettingsEditor(terrainGenerator.biomeSettings, ref terrainGenerator.biomeFoldout, ref biomeEditor);
-            DrawSettingsEditor(terrainGenerator.biomeSettings.heightSettings, ref terrainGenerator.heightMapFoldout, ref heightMapEditor);
-            DrawSettingsEditor(terrainGenerator.biomeSettings.textureSettings, ref terrainGenerator.textureFoldout, ref textureEditor);
-            DrawSettingsEditor(terrainGenerator.meshSettings, ref terrainGenerator.meshFoldout, ref meshEditor);
+            if (terrainGenerator == null)
+            {
+                return;
+            }
+            DrawSettingsEditors();
 
             if (GUILayout.Button("Generate Terrain"))
             {
@@ -32,6 +33,27 @@ namespace WorldGenerator
             if (GUILayout.Button("Clear All Terrain Chunks"))
             {
                 terrainGenerator.ClearTerrainChunks();
+            }
+        }
+        
+        private void DrawSettingsEditors()
+        {
+            if (terrainGenerator.biomeSettings != null)
+            {
+                DrawSettingsEditor(terrainGenerator.biomeSettings, ref terrainGenerator.biomeFoldout, ref biomeEditor);
+
+                if (terrainGenerator.biomeSettings.heightSettings != null)
+                {
+                    DrawSettingsEditor(terrainGenerator.biomeSettings.heightSettings, ref terrainGenerator.heightMapFoldout, ref heightMapEditor);
+                }
+                if (terrainGenerator.biomeSettings.textureSettings != null)
+                {
+                    DrawSettingsEditor(terrainGenerator.biomeSettings.textureSettings, ref terrainGenerator.textureFoldout, ref textureEditor);
+                }
+            }
+            if (terrainGenerator.meshSettings != null)
+            {
+                DrawSettingsEditor(terrainGenerator.meshSettings, ref terrainGenerator.meshFoldout, ref meshEditor);
             }
         }
 

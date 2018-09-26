@@ -90,42 +90,13 @@ namespace NoiseGenerator
 
         private static void ApplyLayer(ref float[,] noiseMap, NoiseLayer layer, int width, int height, Vector2 startPoint)
         {
-            if (layer.filter.generationMode == Filter.GenerationMode.FullRegion)
+            float[,] region = layer.filter.GenerateRegion(width, height, startPoint);
+            for (int y = 0; y < height; y++)
             {
-                float[,] region = layer.filter.GenerateRegion(width, height, startPoint);
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        noiseMap[x, y] = CalculateValue(noiseMap[x, y], region[x, y], layer.layerOperator);
-                    }
+                    noiseMap[x, y] = CalculateValue(noiseMap[x, y], region[x, y], layer.layerOperator);
                 }
-            }
-
-            switch (layer.filter.generationMode)
-            {
-                case Filter.GenerationMode.EvaluatePoints:
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            Vector2 point = new Vector2(x + startPoint.x, y - startPoint.y);
-                            noiseMap[x, y] = CalculateValue(noiseMap[x, y], layer.filter.Evaluate(point), layer.layerOperator);
-                        }
-                    }
-                    break;
-                case Filter.GenerationMode.FullRegion:
-                    float[,] region = layer.filter.GenerateRegion(width, height, startPoint);
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            noiseMap[x, y] = CalculateValue(noiseMap[x, y], region[x, y], layer.layerOperator);
-                        }
-                    }
-                    break;
-                default:
-                    throw new System.Exception("Unknown filter generation mode");
             }
         }
 

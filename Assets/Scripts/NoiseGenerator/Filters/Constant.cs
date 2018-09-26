@@ -32,7 +32,7 @@ namespace NoiseGenerator.Filters
             return settings.value;
         }
 
-        public override float Evaluate(Vector2 point)
+        protected override float Evaluate(float x, float y)
         {
             return settings.value;
         }

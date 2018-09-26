@@ -58,7 +58,7 @@ namespace NoiseGenerator.Filters
             this.octaveOffsets = octaveOffsets;
         }
 
-        public override float Evaluate(Vector2 point)
+        protected override float Evaluate(float x, float y)
         {
             float value = 0;
             float amplitude = 1;
@@ -66,8 +66,8 @@ namespace NoiseGenerator.Filters
 
             for (int i = 0; i < settings.octaves; i++)
             {
-                float sampleX = (point.x + octaveOffsets[i].x) / settings.scale * frequency;
-                float sampleY = (point.y + octaveOffsets[i].y) / settings.scale * frequency;
+                float sampleX = (x + octaveOffsets[i].x) / settings.scale * frequency;
+                float sampleY = (y + octaveOffsets[i].y) / settings.scale * frequency;
 
                 float newValue = Mathf.PerlinNoise(sampleX, sampleY);
                 value = OctaveValue(value, newValue, amplitude);

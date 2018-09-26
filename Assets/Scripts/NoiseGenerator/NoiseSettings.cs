@@ -6,7 +6,7 @@ namespace NoiseGenerator
     [CreateAssetMenu()]
     public class NoiseSettings : UpdatableSettings
     {
-        public NoiseLayer[] noiseLayers;
+        public NoiseLayer[] noiseLayers = new NoiseLayer[0];
 
 #if UNITY_EDITOR
 

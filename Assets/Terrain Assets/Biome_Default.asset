@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3e87a8833562464597c3fe4111cd376, type: 3}
-  m_Name: DefaultBiomeSettings
+  m_Name: Biome_Default
   m_EditorClassIdentifier: 
-  autoUpdatePreview: 0
-  heightSettings: {fileID: 0}
-  textureSettings: {fileID: 0}
+  autoUpdate: 0
+  heightSettings: {fileID: 11400000, guid: 056659d3e42bd224088f7e1df61ca4c0, type: 2}
+  textureSettings: {fileID: 11400000, guid: fe562e2b3d3573240af7b6509120566d, type: 2}

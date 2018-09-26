@@ -10,8 +10,8 @@
                     return new Filters.Perlin(settings.perlinSettings);
                 case FilterSettings.FilterType.Constant:
                     return new Filters.Constant(settings.constantSettings);
-                case FilterSettings.FilterType.Cellular:
-                    return new Filters.Cellular(settings.cellularSettings);
+                case FilterSettings.FilterType.CellularStep:
+                    return new Filters.CellularStep(settings.cellularSettings);
             }
             throw new System.Exception("Unknown filter type");
         }

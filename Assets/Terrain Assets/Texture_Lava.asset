@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b4cafda7df43d348a98e1c12cff9c1d, type: 3}
+  m_Name: Texture_Lava
+  m_EditorClassIdentifier: 
+  autoUpdate: 1
+  layers:
+  - texture: {fileID: 2800000, guid: 9695fc391f04c7c4bbc368cd9dfa88bb, type: 3}
+    tint: {r: 0.6886792, g: 0.05992292, b: 0, a: 0}
+    tintStrength: 0.729
+    startHeight: 0.095
+    blendStrength: 0.59
+    textureScale: 20
+  - texture: {fileID: 2800000, guid: dc32ad5d31dd3ff44af150f02a8b2e79, type: 3}
+    tint: {r: 0.41509432, g: 0, b: 0.09020452, a: 0}
+    tintStrength: 0.807
+    startHeight: 0.292
+    blendStrength: 0.235
+    textureScale: 10
+  - texture: {fileID: 2800000, guid: 3019064b48f18d54eaaeb21740fdba3b, type: 3}
+    tint: {r: 0, g: 0, b: 0, a: 0}
+    tintStrength: 0.609
+    startHeight: 0.484
+    blendStrength: 0.112
+    textureScale: 20

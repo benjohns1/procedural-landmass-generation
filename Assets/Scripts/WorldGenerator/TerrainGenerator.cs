@@ -17,9 +17,7 @@ namespace WorldGenerator
         public LODInfo[] detailLevels;
 
         public BiomeSettings biomeSettings;
-
         public MeshSettings meshSettings;
-        public TextureSettings textureSettings;
 
         public Transform viewer;
         public Material baseMaterial;

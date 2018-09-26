@@ -6,7 +6,7 @@ namespace NoiseGenerator
     [System.Serializable]
     public class FilterSettings
     {
-        public enum FilterType { Perlin, Constant, Cellular };
+        public enum FilterType { Perlin, Constant, CellularStep };
         public FilterType filterType;
 
         [ConditionalHide("filterType", 0)]
@@ -16,7 +16,7 @@ namespace NoiseGenerator
         public Constant constantSettings;
 
         [ConditionalHide("filterType", 2)]
-        public Cellular cellularSettings;
+        public CellularStep cellularSettings;
 
         [System.Serializable]
         public class Perlin
@@ -48,14 +48,26 @@ namespace NoiseGenerator
         }
 
         [System.Serializable]
-        public class Cellular
+        public class CellularStep
         {
             public int seed;
-            public Gradient cellTypes;
+            public float scale = 1f;
+            public float frequency = 0.05f;
+            public FastNoise.CellularDistanceFunction distanceFunction;
+            public FastNoise.CellularReturnType returnType;
+            public Gradient cellTypes = new Gradient
+            {
+                colorKeys = new GradientColorKey[]
+                {
+                    new GradientColorKey(Color.black, 0.25f),
+                    new GradientColorKey(Color.gray, 0.5f),
+                    new GradientColorKey(Color.white, 1f),
+                }
+            };
 
             public void Validate()
             {
-                cellTypes.mode = GradientMode.Fixed;
+                frequency = Mathf.Max(frequency, 0.0001f);
             }
         }
 
