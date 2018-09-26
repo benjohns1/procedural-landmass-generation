@@ -18,7 +18,7 @@ namespace WorldGenerator
         public void Initialize(int width, int height, Material baseMaterial)
         {
             Region dummyheightMap = RegionGenerator.GenerateRegion(width, height, heightSettings, Vector2.zero, true);
-            TerrainMaterial = baseMaterial;
+            TerrainMaterial = Instantiate<Material>(baseMaterial);
             textureSettings.ApplyToMaterial(TerrainMaterial);
             textureSettings.UpdateMeshHeights(TerrainMaterial, dummyheightMap.minValue, dummyheightMap.maxValue);
         }

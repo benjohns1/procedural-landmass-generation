@@ -29,8 +29,10 @@ MonoBehaviour:
         value: 400
       cellularSettings:
         seed: 0
-        frequency: 0.001
-        distanceFunction: 2
+        scale: 1
+        frequency: 0.01
+        distanceFunction: 0
+        returnType: 0
         cellTypes:
           serializedVersion: 2
           key0: {r: 0, g: 0, b: 0, a: 1}
@@ -76,8 +78,10 @@ MonoBehaviour:
         value: 3
       cellularSettings:
         seed: 0
+        scale: 1
         frequency: 0
         distanceFunction: 0
+        returnType: 0
         cellTypes:
           serializedVersion: 2
           key0: {r: 1, g: 1, b: 1, a: 1}

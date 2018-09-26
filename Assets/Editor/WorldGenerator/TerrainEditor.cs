@@ -7,6 +7,7 @@ namespace WorldGenerator
     public class TerrainEditor : Editor
     {
         TerrainGenerator terrainGenerator;
+        Editor worldEditor;
         Editor biomeEditor;
         Editor heightMapEditor;
         Editor textureEditor;
@@ -38,22 +39,9 @@ namespace WorldGenerator
         
         private void DrawSettingsEditors()
         {
-            if (terrainGenerator.biomeSettings != null)
+            if (terrainGenerator.worldSettings != null)
             {
-                DrawSettingsEditor(terrainGenerator.biomeSettings, ref terrainGenerator.biomeFoldout, ref biomeEditor);
-
-                if (terrainGenerator.biomeSettings.heightSettings != null)
-                {
-                    DrawSettingsEditor(terrainGenerator.biomeSettings.heightSettings, ref terrainGenerator.heightMapFoldout, ref heightMapEditor);
-                }
-                if (terrainGenerator.biomeSettings.textureSettings != null)
-                {
-                    DrawSettingsEditor(terrainGenerator.biomeSettings.textureSettings, ref terrainGenerator.textureFoldout, ref textureEditor);
-                }
-            }
-            if (terrainGenerator.meshSettings != null)
-            {
-                DrawSettingsEditor(terrainGenerator.meshSettings, ref terrainGenerator.meshFoldout, ref meshEditor);
+                DrawSettingsEditor(terrainGenerator.worldSettings, ref terrainGenerator.worldFoldout, ref worldEditor);
             }
         }
 

@@ -38,12 +38,16 @@ namespace WorldGenerator
         private readonly MeshSettings meshSettings;
         private readonly Transform viewer;
 
-        public TerrainChunk(Vector2 coord, NoiseSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
+        public TerrainChunk(Vector2 coord, MeshSettings meshSettings, Region heightMap, Material material, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer)
         {
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.colliderLODIndex = colliderLODIndex;
-            this.heightMapSettings = heightMapSettings;
+
+            this.mapData = heightMap;
+            heightMapReceived = true;
+
+            //this.heightMapSettings = heightMapSettings;
             this.meshSettings = meshSettings;
             this.viewer = viewer;
 
@@ -77,7 +81,9 @@ namespace WorldGenerator
 
         public void Load()
         {
-            JobQueue.Run(() => RegionGenerator.GenerateRegion(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
+            //JobQueue.Run(() => RegionGenerator.GenerateRegion(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
+
+            UpdateTerrainChunk(); // Do this after height map received (currently runnin synchronously)
         }
 
         public void DestroyGameObject()

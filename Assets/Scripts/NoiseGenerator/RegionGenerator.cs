@@ -15,7 +15,17 @@ namespace NoiseGenerator
             if (!cache.TryGetValue(hash, out map))
             {
                 map = new NoiseMap(settings);
-                cache.Add(hash, map);
+                lock (cache)
+                {
+                    if (cache.ContainsKey(hash))
+                    {
+                        map = cache[hash];
+                    }
+                    else
+                    {
+                        cache.Add(hash, map);
+                    }
+                }
             }
             else if (reinitialize)
             {

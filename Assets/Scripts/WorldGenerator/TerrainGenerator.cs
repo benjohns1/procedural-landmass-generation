@@ -16,11 +16,10 @@ namespace WorldGenerator
         public int colliderLODIndex;
         public LODInfo[] detailLevels;
 
-        public BiomeSettings biomeSettings;
-        public MeshSettings meshSettings;
-
+        public WorldSettings worldSettings;
         public Transform viewer;
-        public Material baseMaterial;
+
+        public int activeBiome;
 
         private Transform chunkParent;
 
@@ -38,6 +37,8 @@ namespace WorldGenerator
 
 #if UNITY_EDITOR
         [HideInInspector]
+        public bool worldFoldout;
+        [HideInInspector]
         public bool meshFoldout;
         [HideInInspector]
         public bool biomeFoldout;
@@ -51,10 +52,10 @@ namespace WorldGenerator
         {
             ClearTerrainChunks();
 
-            biomeSettings.Initialize(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, baseMaterial);
+            worldSettings.Initialize();
 
             float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
-            meshWorldSize = meshSettings.meshWorldSize;
+            meshWorldSize = worldSettings.meshSettings.meshWorldSize;
             chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
 
             if (chunkParent == null)
@@ -164,7 +165,8 @@ namespace WorldGenerator
                     }
                     else
                     {
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, biomeSettings.heightSettings, meshSettings, detailLevels, colliderLODIndex, chunkParent.transform, viewer, biomeSettings.TerrainMaterial);
+                        BiomeTerrainChunkGenerator.ChunkData chunkData = BiomeTerrainChunkGenerator.GenerateChunkData(viewedChunkCoord, worldSettings);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, worldSettings.meshSettings, chunkData.heightMap, chunkData.material, detailLevels, colliderLODIndex, chunkParent.transform, viewer);
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         if (initialLoad)

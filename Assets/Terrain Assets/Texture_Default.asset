@@ -11,14 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b4cafda7df43d348a98e1c12cff9c1d, type: 3}
   m_Name: Texture_Default
   m_EditorClassIdentifier: 
-  autoUpdate: 0
+  autoUpdate: 1
   layers:
   - texture: {fileID: 2800000, guid: dc32ad5d31dd3ff44af150f02a8b2e79, type: 3}
     tint: {r: 0.38679248, g: 0.3433367, b: 0.29009438, a: 0}
     tintStrength: 0.086
     startHeight: 0.273
     blendStrength: 0.161
-    textureScale: 25
+    textureScale: 20
   - texture: {fileID: 2800000, guid: 88d7ae707fa9c3647b214196685e0de6, type: 3}
     tint: {r: 0.8113208, g: 0.80168, b: 0.5319509, a: 0}
     tintStrength: 0.078
