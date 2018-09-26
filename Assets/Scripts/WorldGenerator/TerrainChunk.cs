@@ -34,29 +34,23 @@ namespace WorldGenerator
 
         private bool initiallyLoaded;
 
-        private readonly NoiseSettings heightMapSettings;
-        private readonly MeshSettings meshSettings;
+        private readonly WorldSettings worldSettings;
         private readonly Transform viewer;
 
-        public TerrainChunk(Vector2 coord, MeshSettings meshSettings, Region heightMap, Material material, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer)
+        public TerrainChunk(Vector2 coord, WorldSettings worldSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer)
         {
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.colliderLODIndex = colliderLODIndex;
+            this.worldSettings = worldSettings;
 
-            this.mapData = heightMap;
-            heightMapReceived = true;
-
-            //this.heightMapSettings = heightMapSettings;
-            this.meshSettings = meshSettings;
             this.viewer = viewer;
 
-            sampleCenter = coord * meshSettings.meshWorldSize / meshSettings.meshScale;
-            Vector2 position = coord * meshSettings.meshWorldSize;
+            Vector2 position = coord * worldSettings.meshSettings.meshWorldSize;
+            sampleCenter = position / worldSettings.meshSettings.meshScale;
 
             meshObject = new GameObject("Terrain Chunk");
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
-            meshRenderer.material = material;
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
 
@@ -77,13 +71,12 @@ namespace WorldGenerator
 
             maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
             sqrMaxViewDst = (maxViewDst * maxViewDst);
+
         }
 
         public void Load()
         {
-            //JobQueue.Run(() => RegionGenerator.GenerateRegion(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCenter), this.OnHeightMapReceived);
-
-            UpdateTerrainChunk(); // Do this after height map received (currently runnin synchronously)
+            JobQueue.Run(() => BiomeTerrainChunkGenerator.GenerateChunkData(sampleCenter, worldSettings), this.OnHeightMapReceived);
         }
 
         public void DestroyGameObject()
@@ -93,7 +86,9 @@ namespace WorldGenerator
 
         private void OnHeightMapReceived(object data)
         {
-            this.mapData = (Region)data;
+            BiomeTerrainChunkGenerator.ChunkData chunkData = (BiomeTerrainChunkGenerator.ChunkData)data;
+            this.mapData = chunkData.heightMap;
+            meshRenderer.material = chunkData.material;
             heightMapReceived = true;
 
             UpdateTerrainChunk();
@@ -131,7 +126,7 @@ namespace WorldGenerator
 
                 if (!lodMeshes[lodIndex].hasRequestedMesh)
                 {
-                    lodMeshes[lodIndex].RequestMesh(mapData, meshSettings);
+                    lodMeshes[lodIndex].RequestMesh(mapData, worldSettings.meshSettings);
                 }
                 else
                 {
@@ -172,7 +167,7 @@ namespace WorldGenerator
 
             if (!lodMeshes[colliderLODIndex].hasRequestedMesh)
             {
-                lodMeshes[colliderLODIndex].RequestMesh(mapData, meshSettings);
+                lodMeshes[colliderLODIndex].RequestMesh(mapData, worldSettings.meshSettings);
             }
             else
             {

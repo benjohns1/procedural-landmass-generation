@@ -7,7 +7,7 @@ namespace WorldGenerator
     [CreateAssetMenu()]
     public class WorldSettings : UpdatableSettings
     {
-        public NoiseSettings globalHeightMap;
+        public NoiseSettings globalHeightMapSettings;
         public MeshSettings meshSettings;
         public BiomeSettings[] biomes;
         public Material baseMaterial;

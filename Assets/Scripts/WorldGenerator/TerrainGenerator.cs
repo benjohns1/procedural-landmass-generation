@@ -165,8 +165,7 @@ namespace WorldGenerator
                     }
                     else
                     {
-                        BiomeTerrainChunkGenerator.ChunkData chunkData = BiomeTerrainChunkGenerator.GenerateChunkData(viewedChunkCoord, worldSettings);
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, worldSettings.meshSettings, chunkData.heightMap, chunkData.material, detailLevels, colliderLODIndex, chunkParent.transform, viewer);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, worldSettings, detailLevels, colliderLODIndex, chunkParent.transform, viewer);
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         if (initialLoad)

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: World_Default
   m_EditorClassIdentifier: 
   autoUpdate: 0
-  globalHeightMap: {fileID: 11400000, guid: 46aeecce958198742ac2e42a410f89ff, type: 2}
+  globalHeightMapSettings: {fileID: 11400000, guid: 46aeecce958198742ac2e42a410f89ff,
+    type: 2}
   meshSettings: {fileID: 11400000, guid: 4c83948ab984e3441871be428cc55991, type: 2}
   biomes:
   - {fileID: 11400000, guid: c8bc580b6c85ee944a43d1dedc793663, type: 2}

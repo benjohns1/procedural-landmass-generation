@@ -12,13 +12,12 @@ namespace WorldGenerator
             public Material material;
         }
 
-        public static ChunkData GenerateChunkData(Vector2 coord, WorldSettings worldSettings)
+        public static ChunkData GenerateChunkData(Vector2 sampleCenter, WorldSettings worldSettings)
         {
-            // @TODO: run this via threaded job system
             int width = worldSettings.meshSettings.numVertsPerLine;
             int height = worldSettings.meshSettings.numVertsPerLine;
-            Vector2 sampleCenter = coord * worldSettings.meshSettings.meshWorldSize / worldSettings.meshSettings.meshScale;
-            Region biomeMap = RegionGenerator.GenerateRegion(width, height, worldSettings.biomeMapSettings, sampleCenter);
+            Region biomeMap = worldSettings.biomeMapSettings == null ? new Region(new float[width, height], 0, 0) : RegionGenerator.GenerateRegion(width, height, worldSettings.biomeMapSettings, sampleCenter);
+            Region worldHeightMap = worldSettings.globalHeightMapSettings == null ? new Region(new float[width, height], 0, 0) : RegionGenerator.GenerateRegion(width, height, worldSettings.globalHeightMapSettings, sampleCenter);
 
             float[,] combinedHeightMap = new float[width, height];
             MinMaxFloat minMax = new MinMaxFloat();
@@ -33,8 +32,8 @@ namespace WorldGenerator
 
                 float id = biome.worldMapBiomeId;
                 Region heightMap = RegionGenerator.GenerateRegion(width, height, biome.heightSettings, sampleCenter);
-                minMax.AddValue(heightMap.minValue);
-                minMax.AddValue(heightMap.maxValue);
+                minMax.AddValue(heightMap.minValue + worldHeightMap.minValue);
+                minMax.AddValue(heightMap.maxValue + worldHeightMap.maxValue);
 
                 // @TODO: also apply world heightmap
                 for (int y = 0; y < height; y++)
@@ -44,7 +43,7 @@ namespace WorldGenerator
                         // @TODO: generate blur mask edges for smooth transitions
                         if (Mathf.Approximately(id, biomeMap.values[x, y]))
                         {
-                            combinedHeightMap[x, y] += heightMap.values[x, y];
+                            combinedHeightMap[x, y] += heightMap.values[x, y] + worldHeightMap.values[x, y];
                         }
                     }
                 }
