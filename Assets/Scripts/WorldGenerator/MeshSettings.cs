@@ -28,7 +28,7 @@ namespace WorldGenerator
             }
         }
 
-        public float meshWorldSize
+        public float meshSizeInWorld
         {
             get
             {

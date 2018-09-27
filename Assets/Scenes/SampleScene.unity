@@ -557,7 +557,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1355268565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,6 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a08045623d5ea459350cce7d621505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceSynchronous: 1
   checkJobQueueMilliseconds: 100
   maxResultsPerFrame: 3
   autoRunResultCallbacksInEditor: 1
@@ -606,12 +607,7 @@ MonoBehaviour:
     visibleDstThreshold: 800
   worldSettings: {fileID: 11400000, guid: 08ae94ce728632647ac9d501861c699b, type: 2}
   viewer: {fileID: 970366659}
-  activeBiome: 0
   worldFoldout: 1
-  meshFoldout: 1
-  biomeFoldout: 0
-  heightMapFoldout: 0
-  textureFoldout: 0
 --- !u!1 &1650775129
 GameObject:
   m_ObjectHideFlags: 0

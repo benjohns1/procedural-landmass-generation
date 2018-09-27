@@ -8,10 +8,8 @@ namespace WorldGenerator
     {
         TerrainGenerator terrainGenerator;
         Editor worldEditor;
-        Editor biomeEditor;
-        Editor heightMapEditor;
-        Editor textureEditor;
-        Editor meshEditor;
+        Editor globalHeightMapEditor;
+        Editor meshSettingsEditor;
 
         private void OnEnable()
         {
@@ -41,7 +39,10 @@ namespace WorldGenerator
         {
             if (terrainGenerator.worldSettings != null)
             {
-                DrawSettingsEditor(terrainGenerator.worldSettings, ref terrainGenerator.worldFoldout, ref worldEditor);
+                WorldSettings settings = terrainGenerator.worldSettings;
+                DrawSettingsEditor(settings, ref terrainGenerator.worldFoldout, ref worldEditor);
+                DrawSettingsEditor(settings.globalHeightMapSettings, ref settings.globalHeightMapSettingsFoldout, ref globalHeightMapEditor);
+                DrawSettingsEditor(settings.meshSettings, ref settings.meshSettingsFoldout, ref meshSettingsEditor);
             }
         }
 

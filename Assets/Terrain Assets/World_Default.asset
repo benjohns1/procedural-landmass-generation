@@ -25,3 +25,7 @@ MonoBehaviour:
     scale: 1
     frequency: 0.001
     distanceFunction: 2
+    heightMapEdgeSmoothing: 3.2
+  globalHeightMapSettingsFoldout: 0
+  meshSettingsFoldout: 0
+  biomesFoldout: 0

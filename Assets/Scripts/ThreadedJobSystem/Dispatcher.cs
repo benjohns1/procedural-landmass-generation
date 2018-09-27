@@ -9,29 +9,63 @@ namespace ThreadedJobSystem
         private class Dispatcher
         {
             private int cycleTimeMilliseconds;
+            private bool forceSynchronous;
 
             private Queue<JobInfo> jobQueue = new Queue<JobInfo>();
             private Queue<JobResult> resultQueue = new Queue<JobResult>();
             private Queue<JobError> errorQueue = new Queue<JobError>();
 
             private Thread dispatcherThread;
+            private bool IsDispatcherAlive
+            {
+                get
+                {
+                    if (dispatcherThread == null)
+                    {
+                        return false;
+                    }
+                    return dispatcherThread.IsAlive;
+                }
+            }
 
-            public Dispatcher(int cycleTimeMilliseconds)
+            public Dispatcher(int cycleTimeMilliseconds, bool forceSynchronous)
             {
                 this.cycleTimeMilliseconds = cycleTimeMilliseconds;
-                StartDispatchThread();
+                this.forceSynchronous = forceSynchronous;
+                if (!forceSynchronous)
+                {
+                    StartDispatchThread();
+                }
             }
 
             public void Enqueue(JobInfo jobInfo)
             {
-                if (!dispatcherThread.IsAlive)
+                if (!IsDispatcherAlive)
                 {
-                    // Restart dispatcher thread in case it halted
-                    StartDispatchThread();
+                    if (forceSynchronous)
+                    {
+                        RunJobSynchronously(jobInfo);
+                        return;
+                    }
+                    else
+                    {
+                        // Restart dispatcher thread in case it halted
+                        StartDispatchThread();
+                    }
                 }
                 lock (jobQueue)
                 {
                     jobQueue.Enqueue(jobInfo);
+                }
+            }
+
+            public void RunJobSynchronously(JobInfo jobInfo)
+            {
+                object resultData = jobInfo.job();
+                JobResult jobResult = new JobResult(jobInfo.callback, resultData);
+                lock (resultQueue)
+                {
+                    resultQueue.Enqueue(jobResult);
                 }
             }
 
@@ -125,12 +159,7 @@ namespace ThreadedJobSystem
                 JobInfo jobInfo = (JobInfo)rawJob;
                 try
                 {
-                    object resultData = jobInfo.job();
-                    JobResult jobResult = new JobResult(jobInfo.callback, resultData);
-                    lock (resultQueue)
-                    {
-                        resultQueue.Enqueue(jobResult);
-                    }
+                    RunJobSynchronously(jobInfo);
                 }
                 catch (System.Exception ex)
                 {

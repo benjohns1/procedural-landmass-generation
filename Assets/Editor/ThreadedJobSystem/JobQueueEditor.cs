@@ -79,6 +79,10 @@ namespace ThreadedJobSystem
 
         public override void OnInspectorGUI()
         {
+            if (GUILayout.Button("Force Create New Dispatcher"))
+            {
+                jobQueue.ForceCreateNewDispatcher();
+            }
             DrawDefaultInspector();
             GUILayout.Label("Queued jobs: " + jobQueueCount);
             GUILayout.Label("Results waiting: " + jobResultCount);

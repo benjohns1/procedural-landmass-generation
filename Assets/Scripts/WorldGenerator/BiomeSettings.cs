@@ -9,6 +9,7 @@ namespace WorldGenerator
     {
         public NoiseSettings heightSettings;
         public TextureSettings textureSettings;
+        public float heightMapEdgeSmoothingModifier = 1f;
         public float frequency = 1f;
 
         public Material TerrainMaterial { get; private set; }

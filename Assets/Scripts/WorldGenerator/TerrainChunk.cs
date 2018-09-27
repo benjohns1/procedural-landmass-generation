@@ -16,7 +16,7 @@ namespace WorldGenerator
         public bool hasSetCollider { get; private set; }
 
         private GameObject meshObject;
-        private Vector2 sampleCenter;
+        private Vector2 startPoint;
 
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
@@ -46,8 +46,8 @@ namespace WorldGenerator
 
             this.viewer = viewer;
 
-            Vector2 position = coord * worldSettings.meshSettings.meshWorldSize;
-            sampleCenter = position / worldSettings.meshSettings.meshScale;
+            Vector2 position = coord * worldSettings.meshSettings.meshSizeInWorld;
+            startPoint = position / worldSettings.meshSettings.meshScale;
 
             meshObject = new GameObject("Terrain Chunk");
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -76,7 +76,7 @@ namespace WorldGenerator
 
         public void Load()
         {
-            JobQueue.Run(() => BiomeTerrainChunkGenerator.GenerateChunkData(sampleCenter, worldSettings), this.OnHeightMapReceived);
+            JobQueue.Run(() => BiomeTerrainChunkGenerator.GenerateChunkData(startPoint, worldSettings), this.OnHeightMapReceived);
         }
 
         public void DestroyGameObject()
@@ -109,7 +109,7 @@ namespace WorldGenerator
                 return;
             }
 
-            float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
+            float sqrViewerDstFromCenter = (viewerPosition - startPoint).sqrMagnitude;
             bool wasVisible = IsVisible();
             bool visible = sqrViewerDstFromCenter <= sqrMaxViewDst;
             if (visible)
@@ -159,7 +159,7 @@ namespace WorldGenerator
                 return;
             }
 
-            float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
+            float sqrViewerDstFromCenter = (viewerPosition - startPoint).sqrMagnitude;
             if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
             {
                 return;
@@ -208,7 +208,7 @@ namespace WorldGenerator
                 return;
             }
 
-            float sqrViewerDstFromCenter = (viewerPosition - sampleCenter).sqrMagnitude;
+            float sqrViewerDstFromCenter = (viewerPosition - startPoint).sqrMagnitude;
             if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
             {
                 return;

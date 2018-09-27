@@ -5,7 +5,11 @@ namespace ThreadedJobSystem
 {
     public partial class JobQueue : MonoBehaviour
     {
-        [Tooltip("Time (in milliseconds) between loops when the system checks if there are job requests in the input queue")]
+
+        [Tooltip("Turn off async processing and force all tasks to run on the main thread immediately when queued (will need to force start a new dispatcher after changing this)")]
+        public bool forceSynchronous;
+
+        [Tooltip("Time (in milliseconds) between loops when the system checks if there are job requests in the input queue (will need to force start a new dispatcher after changing this)")]
         public int checkJobQueueMilliseconds = 100;
 
         [Tooltip("Limit the maximum number of result callbacks to invoke by the main thread per frame. Set to 0 for no limit (not recommended).")]
@@ -50,22 +54,28 @@ namespace ThreadedJobSystem
             return dispatcher.GetErrorQueueCount();
         }
 
+        public void ForceCreateNewDispatcher()
+        {
+            CreateDispatcher(true);
+        }
+
         private void Awake()
         {
-            if (dispatcher == null)
-            {
-                dispatcher = new Dispatcher(checkJobQueueMilliseconds);
-            }
+            CreateDispatcher();
         }
 
         private void OnValidate()
         {
             checkJobQueueMilliseconds = Mathf.Max(checkJobQueueMilliseconds, 10);
             maxResultsPerFrame = Mathf.Max(maxResultsPerFrame, 0);
+            CreateDispatcher();
+        }
 
-            if (dispatcher == null)
+        private void CreateDispatcher(bool force = false)
+        {
+            if (dispatcher == null || force)
             {
-                dispatcher = new Dispatcher(checkJobQueueMilliseconds);
+                dispatcher = new Dispatcher(checkJobQueueMilliseconds, forceSynchronous);
             }
         }
 

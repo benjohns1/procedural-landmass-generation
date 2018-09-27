@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NoiseGenerator;
 
 namespace WorldGenerator
 {
@@ -19,15 +18,13 @@ namespace WorldGenerator
         public WorldSettings worldSettings;
         public Transform viewer;
 
-        public int activeBiome;
-
         private Transform chunkParent;
 
         private Vector2 viewerPos;
         private Vector2 viewerPosPrevChunkCheck;
         private bool addedFirstCollider;
 
-        private float meshWorldSize;
+        private float meshSizeInWorld;
         private int chunksVisibleInViewDst;
 
         private Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
@@ -38,14 +35,6 @@ namespace WorldGenerator
 #if UNITY_EDITOR
         [HideInInspector]
         public bool worldFoldout;
-        [HideInInspector]
-        public bool meshFoldout;
-        [HideInInspector]
-        public bool biomeFoldout;
-        [HideInInspector]
-        public bool heightMapFoldout;
-        [HideInInspector]
-        public bool textureFoldout;
 #endif
 
         public void GenerateTerrain(bool initialLoad = false)
@@ -55,8 +44,8 @@ namespace WorldGenerator
             worldSettings.Initialize();
 
             float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
-            meshWorldSize = worldSettings.meshSettings.meshWorldSize;
-            chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
+            meshSizeInWorld = worldSettings.meshSettings.meshSizeInWorld;
+            chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshSizeInWorld);
 
             if (chunkParent == null)
             {
@@ -146,8 +135,8 @@ namespace WorldGenerator
                 visibleTerrainChunks[i].UpdateTerrainChunk();
             }
 
-            int currentChunkCoordX = Mathf.RoundToInt(viewerPos.x / meshWorldSize);
-            int currentChunkCoordY = Mathf.RoundToInt(viewerPos.y / meshWorldSize);
+            int currentChunkCoordX = Mathf.RoundToInt(viewerPos.x / meshSizeInWorld);
+            int currentChunkCoordY = Mathf.RoundToInt(viewerPos.y / meshSizeInWorld);
 
             for (int yOffset = -chunksVisibleInViewDst; yOffset <= chunksVisibleInViewDst; yOffset++)
             {

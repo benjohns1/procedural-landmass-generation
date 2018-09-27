@@ -17,13 +17,23 @@ namespace WorldGenerator
 
         public GlobalBiomeSettings globalBiomeSettings;
 
+#if UNITY_EDITOR
+        [HideInInspector]
+        public bool globalHeightMapSettingsFoldout;
+        [HideInInspector]
+        public bool meshSettingsFoldout;
+        [HideInInspector]
+        public bool biomesFoldout;
+#endif
+
         [System.Serializable]
-        public struct GlobalBiomeSettings
+        public class GlobalBiomeSettings
         {
             public int seed;
-            public float scale;
-            public float frequency;
-            public FastNoise.CellularDistanceFunction distanceFunction;
+            public float scale = 1f;
+            public float frequency = 0.001f;
+            public FastNoise.CellularDistanceFunction distanceFunction = FastNoise.CellularDistanceFunction.Natural;
+            public float heightMapEdgeSmoothing = 3f;
         }
 
         public void Initialize()
