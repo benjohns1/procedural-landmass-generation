@@ -45,7 +45,7 @@ namespace NoiseGenerator.Filters
             {
                 for (int x = 0; x < width; x++)
                 {
-                    float val = noise.GetCellular((startPoint.x + x) / settings.scale, (startPoint.y - y) / settings.scale);
+                    float val = noise.GetCellular((startPoint.x + x), (startPoint.y - y));
                     float clamped = settings.returnType == FastNoise.CellularReturnType.CellValue ? (val + 1) / 2f : Mathf.Clamp01(val);
                     valueMap[x, y] = settings.cellTypes.Evaluate(clamped).grayscale;
                 }

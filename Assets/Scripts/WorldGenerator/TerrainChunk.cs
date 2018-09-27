@@ -76,7 +76,7 @@ namespace WorldGenerator
 
         public void Load()
         {
-            JobQueue.Run(() => BiomeTerrainChunkGenerator.GenerateChunkData(startPoint, worldSettings), this.OnHeightMapReceived);
+            JobQueue.Run(() => BiomeTerrainChunkGenerator.GenerateChunkData(startPoint, coord, worldSettings), this.OnHeightMapReceived);
         }
 
         public void DestroyGameObject()

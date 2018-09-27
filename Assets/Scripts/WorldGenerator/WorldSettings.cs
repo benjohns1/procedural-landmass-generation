@@ -30,10 +30,21 @@ namespace WorldGenerator
         public class GlobalBiomeSettings
         {
             public int seed;
-            public float scale = 1f;
             public float frequency = 0.001f;
             public FastNoise.CellularDistanceFunction distanceFunction = FastNoise.CellularDistanceFunction.Natural;
-            public float heightMapEdgeSmoothing = 3f;
+            public float heightMapEdgeSmoothing = 1f;
+
+            public void OnValidate()
+            {
+                frequency = Mathf.Max(frequency, 0.0001f);
+                heightMapEdgeSmoothing = Mathf.Clamp(heightMapEdgeSmoothing, 0.0001f, 3f);
+            }
+        }
+
+        protected override void OnValidate()
+        {
+            globalBiomeSettings.OnValidate();
+            base.OnValidate();
         }
 
         public void Initialize()
@@ -62,7 +73,6 @@ namespace WorldGenerator
                         cellularSettings = new FilterSettings.CellularStep
                         {
                             seed = worldBiomeSettings.seed,
-                            scale = worldBiomeSettings.scale,
                             frequency = worldBiomeSettings.frequency,
                             distanceFunction = worldBiomeSettings.distanceFunction,
                             cellTypes = new Gradient
@@ -93,7 +103,7 @@ namespace WorldGenerator
                 currentFrequency += biomes[i].frequency;
                 float time = currentFrequency / totalFrequency;
                 float colorId = (float)i / colorDivisor;
-                biomes[i].worldMapBiomeId = colorId;
+                biomes[i].worldMapBiomeValue = colorId;
                 biomeKeys[i] = new GradientColorKey
                 {
                     time = time,

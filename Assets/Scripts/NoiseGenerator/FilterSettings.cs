@@ -51,7 +51,6 @@ namespace NoiseGenerator
         public class CellularStep
         {
             public int seed;
-            public float scale = 1f;
             public float frequency = 0.05f;
             public FastNoise.CellularDistanceFunction distanceFunction;
             public FastNoise.CellularReturnType returnType;

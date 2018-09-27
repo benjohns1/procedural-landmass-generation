@@ -9,13 +9,13 @@ namespace WorldGenerator
         private Vector2[] uvs;
         private Vector3[] bakedNormals;
 
-        private Vector3[] outOfMeshVertices;
+        private readonly Vector3[] outOfMeshVertices;
         private int[] outOfMeshTriangles;
 
         private int triangleIndex;
         private int outOfMeshTriangleIndex;
 
-        private bool useFlatShading;
+        private readonly bool useFlatShading;
 
         public MeshData(int numVertsPerLine, int skipIncrement, bool useFlatShading)
         {

@@ -14,7 +14,7 @@ namespace WorldGenerator
 
         public Material TerrainMaterial { get; private set; }
         [HideInInspector]
-        public float worldMapBiomeId;
+        public float worldMapBiomeValue;
 
         public void Initialize(int width, int height, Material baseMaterial)
         {
