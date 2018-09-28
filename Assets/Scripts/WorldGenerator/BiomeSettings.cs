@@ -15,9 +15,12 @@ namespace WorldGenerator
         public Material TerrainMaterial { get; private set; }
         [HideInInspector]
         public float worldMapBiomeValue;
+        [HideInInspector]
+        public int id;
 
         public void Initialize(int width, int height, Material baseMaterial)
         {
+            id = GetInstanceID();
             Region dummyheightMap = RegionGenerator.GenerateRegion(width, height, heightSettings, Vector2.zero, true);
             TerrainMaterial = Instantiate<Material>(baseMaterial);
             textureSettings.ApplyToMaterial(TerrainMaterial);

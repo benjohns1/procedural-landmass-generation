@@ -6,8 +6,6 @@ namespace WorldGenerator
 {
     public class TerrainChunk
     {
-        const float colliderGenerationDistanceThreshold = 200f;
-        const float sqrColliderGenerationDistanceThreshold = colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold;
 
         public event System.Action<TerrainChunk> OnLodMeshUpdated;
         public event System.Action<TerrainChunk, bool> OnVisibilityChanged;
@@ -49,7 +47,7 @@ namespace WorldGenerator
             Vector2 position = coord * worldSettings.meshSettings.meshSizeInWorld;
             startPoint = position / worldSettings.meshSettings.meshScale;
 
-            meshObject = new GameObject("Terrain Chunk");
+            meshObject = new GameObject("Terrain Chunk " + coord);
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
@@ -160,7 +158,7 @@ namespace WorldGenerator
             }
 
             float sqrViewerDstFromCenter = (viewerPosition - startPoint).sqrMagnitude;
-            if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
+            if (sqrViewerDstFromCenter > worldSettings.SqrColliderGenerationDistanceThreshold)
             {
                 return;
             }
@@ -209,7 +207,7 @@ namespace WorldGenerator
             }
 
             float sqrViewerDstFromCenter = (viewerPosition - startPoint).sqrMagnitude;
-            if (sqrViewerDstFromCenter > sqrColliderGenerationDistanceThreshold)
+            if (sqrViewerDstFromCenter > worldSettings.SqrColliderGenerationDistanceThreshold)
             {
                 return;
             }

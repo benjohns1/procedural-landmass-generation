@@ -11,6 +11,9 @@ namespace WorldGenerator
         public MeshSettings meshSettings;
         public BiomeSettings[] biomes;
         public Material baseMaterial;
+        [SerializeField]
+        private float colliderGenerationDistanceThreshold = 200f;
+        public float SqrColliderGenerationDistanceThreshold { get; private set; }
 
         [HideInInspector]
         public NoiseSettings biomeMapSettings;
@@ -44,6 +47,7 @@ namespace WorldGenerator
         protected override void OnValidate()
         {
             globalBiomeSettings.OnValidate();
+            SqrColliderGenerationDistanceThreshold = colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold;
             base.OnValidate();
         }
 
