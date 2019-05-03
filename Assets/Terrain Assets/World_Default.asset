@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -18,11 +19,12 @@ MonoBehaviour:
   biomes:
   - {fileID: 11400000, guid: c8bc580b6c85ee944a43d1dedc793663, type: 2}
   - {fileID: 11400000, guid: 9f7a5eeca42e264468912a9ba982bd91, type: 2}
+  - {fileID: 11400000, guid: dcf7880303b39f74f8b80bb1b64c8251, type: 2}
   baseMaterial: {fileID: 2100000, guid: c64e781798b853a41bd2ab7fa1fd8260, type: 2}
-  colliderGenerationDistanceThreshold: 400
+  colliderGenerationDistanceThreshold: 350
   biomeMapSettings: {fileID: 0}
   globalBiomeSettings:
-    seed: 0
+    seed: 8472
     frequency: 0.05
     distanceFunction: 2
     heightMapEdgeSmoothing: 1

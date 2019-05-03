@@ -12,7 +12,7 @@ namespace WorldGenerator
         public BiomeSettings[] biomes;
         public Material baseMaterial;
         [SerializeField]
-        private float colliderGenerationDistanceThreshold = 200f;
+        private readonly float colliderGenerationDistanceThreshold = 200f;
         public float SqrColliderGenerationDistanceThreshold { get; private set; }
 
         [HideInInspector]
@@ -44,15 +44,18 @@ namespace WorldGenerator
             }
         }
 
+        #if UNITY_EDITOR
         protected override void OnValidate()
         {
             globalBiomeSettings.OnValidate();
             SqrColliderGenerationDistanceThreshold = colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold;
             base.OnValidate();
         }
+        #endif
 
         public void Initialize()
         {
+            SqrColliderGenerationDistanceThreshold = colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold;
             float totalFrequency = 0;
             foreach (BiomeSettings biome in biomes)
             {
